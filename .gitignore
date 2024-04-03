@@ -1,0 +1,4 @@
+*.tif
+*.png
+/tango-env
+SLM.bat
