@@ -82,8 +82,8 @@ def main():
  
     #Display CGH pattern from image file with using dll
     filepath = "C:\\Users\\Pedro\\Desktop\\Tango_SLM\\Target image sample\\number_gradation_256x256.bmp"
-    N = (250,250)
-    image = np.random.randint(0, 100, size=N)
+    N = (1280,1024)
+    image = np.random.randint(0, 255, size=N)
     print(image)
     makeBmpArray(image, x, y, farray)
     showOn2ndDisplay(monitorNo, windowNo, x, xShift, y, yShift, farray)
@@ -252,8 +252,7 @@ int y: Pixel number of y-dimension
 8bit unsigned int array outArray: output array
 '''
 def makeBmpArray(image, x, y, outArray):
-    imageHeight = len(image)
-    imageWidth = len(image)
+    imageWidth,imageHeight = np.shape(image)
     print(len(np.array(outArray)))
     
     print("Imagesize = {} x {}".format(imageWidth, imageHeight))
