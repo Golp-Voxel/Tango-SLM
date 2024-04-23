@@ -105,6 +105,50 @@ def showOn2ndDisplay(monitorNo, windowNo, x, xShift, y, yShift, array):
     
     return 0
 
+
+'''
+the function for making FresnelLens pattern array
+String filepath: image file path.
+int x: Pixel number of x-dimension
+int y: Pixel number of y-dimension
+8bit unsigned int array outArray: output array
+'''
+def makeBmpArray(filepath, x, y, outArray):
+    im = Image.open(filepath)
+    imageHeight, imageWidth = im.size
+    im_gray = im.convert("L")
+    
+    print("Imagesize = {} x {}".format(imageWidth, imageHeight))
+    
+    for i in range(imageWidth):
+        for j in range(imageHeight):
+            outArray[i+imageWidth*j] = im_gray.getpixel((i,j))
+    
+    Lcoslib = cdll.LoadLibrary("Image_Control.dll")
+    Lcoslib = windll.LoadLibrary("Image_Control.dll")
+    
+    #Create CGH
+    inArray = copy.deepcopy(outArray)
+    Create_CGH_OC = Lcoslib.Create_CGH_OC
+    Create_CGH_OC.argtyes = [c_void_p, c_int, c_int, c_int, c_int, c_void_p, c_void_p]
+    Create_CGH_OC.restype = c_int
+    
+    repNo = 100
+    progressBar = 1
+    Create_CGH_OC(byref(inArray), repNo, progressBar, imageWidth, imageHeight, byref(c_int(imageHeight*imageWidth)), byref(outArray))
+    
+    #Tilling the image
+    inArray = copy.deepcopy(outArray)
+    Image_Tiling = Lcoslib.Image_Tiling
+    Image_Tiling.argtyes = [c_void_p, c_int, c_int, c_int, c_int, c_int, c_void_p, c_void_p]
+    Image_Tiling.restype = c_int
+    
+    Image_Tiling(byref(inArray), imageWidth, imageHeight, imageHeight*imageWidth, x, y, byref(c_int(x*y)), byref(outArray))
+    
+    return 0
+
+
+
 def showOn2ndDisplay_all_time(monitorNo, windowNo, x, xShift, y, yShift, array):
     Lcoslib = windll.LoadLibrary("C:\\Users\\User\\Desktop\\Tango_Device_Test\\Tango_SLM\\Image_Control.dll")
     
@@ -176,6 +220,21 @@ class SLM(Device):
         beamSize = 20.0
         makeLaguerreGaussModeArray(p, m, pitch, beamSize, x, y, farray)
         # showOn2ndDisplay(monitorNo, windowNo, x, xShift, y, yShift, farray)
+        my_thread = Thread(target = showOn2ndDisplay_all_time, args = (monitorNo, windowNo, x, xShift, y, yShift, farray, ))
+        my_thread.start()
+        return "Test"
+    
+    @command(dtype_in=((int,),),dtype_out=str)
+    def CustomImage(self,Image):
+        global my_thread
+          #pixelpitch(0: 20um 1: 1.25um)
+        p = 5
+        m = 5
+        pitch = 1
+        beamSize = 20.0
+        #Display CGH pattern from image file with using dll
+        filepath = "Target image sample\\number_gradation_256x256.bmp"
+        makeBmpArray(filepath, x, y, farray)
         my_thread = Thread(target = showOn2ndDisplay_all_time, args = (monitorNo, windowNo, x, xShift, y, yShift, farray, ))
         my_thread.start()
         return "Test"
