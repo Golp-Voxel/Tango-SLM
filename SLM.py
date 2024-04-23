@@ -56,10 +56,12 @@ forcus = 1000
 wavelength = 1064
 modeSelect = 0
 
+Path_to_DLL = "C:\\Users\\User\\Desktop\\Tango_Device_Test\\Tango_SLM\\"
+
 
 def makeCylindricalLensArray(forcus, wavelength, pitch, modeSelect, x, y, array):
-    Lcoslib = cdll.LoadLibrary("C:\\Users\\User\\Desktop\\Tango_Device_Test\\Tango_SLM\\Image_Control.dll")
-    Lcoslib = windll.LoadLibrary("C:\\Users\\User\\Desktop\\Tango_Device_Test\\Tango_SLM\\Image_Control.dll")
+    Lcoslib = cdll.LoadLibrary(Path_to_DLL+"Image_Control.dll")
+    Lcoslib = windll.LoadLibrary(Path_to_DLL+"Image_Control.dll")
     CylindricalLens = Lcoslib.CylindricalLens
     CylindricalLens.argtyes = [c_int, c_int, c_int, c_int, c_int, c_int, c_void_p, c_void_p]
     CylindricalLens.restype = c_int
@@ -80,8 +82,7 @@ int yShift: shift pixels of y-dimension
 8bit unsigned int array array: output array
 '''
 def showOn2ndDisplay(monitorNo, windowNo, x, xShift, y, yShift, array):
-    Lcoslib = windll.LoadLibrary("C:\\Users\\User\\Desktop\\Tango_Device_Test\\Tango_SLM\\Image_Control.dll")
-    
+    Lcoslib = windll.LoadLibrary(Path_to_DLL+"Image_Control.dll")
     #Select LCOS window
     Window_Settings = Lcoslib.Window_Settings
     Window_Settings.argtypes = [c_int, c_int, c_int, c_int]
@@ -113,32 +114,36 @@ int x: Pixel number of x-dimension
 int y: Pixel number of y-dimension
 8bit unsigned int array outArray: output array
 '''
-def makeBmpArray(filepath, x, y, outArray):
-    im = Image.open(filepath)
-    imageHeight, imageWidth = im.size
-    im_gray = im.convert("L")
+
+def makeBmpArray(image, x, y, outArray):
+    imageWidth,imageHeight = np.shape(image)
+    print(len(np.array(outArray)))
     
     print("Imagesize = {} x {}".format(imageWidth, imageHeight))
     
     for i in range(imageWidth):
         for j in range(imageHeight):
-            outArray[i+imageWidth*j] = im_gray.getpixel((i,j))
+            outArray[i+imageWidth*j] = image[i,j]
     
-    Lcoslib = cdll.LoadLibrary("Image_Control.dll")
-    Lcoslib = windll.LoadLibrary("Image_Control.dll")
+    # print(len(np.array(outArray)))
     
-    #Create CGH
-    inArray = copy.deepcopy(outArray)
-    Create_CGH_OC = Lcoslib.Create_CGH_OC
-    Create_CGH_OC.argtyes = [c_void_p, c_int, c_int, c_int, c_int, c_void_p, c_void_p]
-    Create_CGH_OC.restype = c_int
     
-    repNo = 100
-    progressBar = 1
-    Create_CGH_OC(byref(inArray), repNo, progressBar, imageWidth, imageHeight, byref(c_int(imageHeight*imageWidth)), byref(outArray))
+    Lcoslib = windll.LoadLibrary(Path_to_DLL+"Image_Control.dll")
+    
+    # #Create CGH
+    # inArray = copy.deepcopy(outArray)
+    # Create_CGH_OC = Lcoslib.Create_CGH_OC
+    # Create_CGH_OC.argtyes = [c_void_p, c_int, c_int, c_int, c_int, c_void_p, c_void_p]
+    # Create_CGH_OC.restype = c_int
+    
+    # repNo = 100
+    # progressBar = 1
+    # Create_CGH_OC(byref(inArray), repNo, progressBar, imageWidth, imageHeight, byref(c_int(imageHeight*imageWidth)), byref(outArray))
     
     #Tilling the image
     inArray = copy.deepcopy(outArray)
+    # print(np.array(inArray))
+    print(len(np.array(inArray)))
     Image_Tiling = Lcoslib.Image_Tiling
     Image_Tiling.argtyes = [c_void_p, c_int, c_int, c_int, c_int, c_int, c_void_p, c_void_p]
     Image_Tiling.restype = c_int
@@ -150,7 +155,7 @@ def makeBmpArray(filepath, x, y, outArray):
 
 
 def showOn2ndDisplay_all_time(monitorNo, windowNo, x, xShift, y, yShift, array):
-    Lcoslib = windll.LoadLibrary("C:\\Users\\User\\Desktop\\Tango_Device_Test\\Tango_SLM\\Image_Control.dll")
+    Lcoslib = windll.LoadLibrary(Path_to_DLL+"Image_Control.dll")
     
     #Select LCOS window
     Window_Settings = Lcoslib.Window_Settings
@@ -176,8 +181,8 @@ def showOn2ndDisplay_all_time(monitorNo, windowNo, x, xShift, y, yShift, array):
     return 0
 
 def makeLaguerreGaussModeArray(p, m, pitch, beamSize, x, y, array):
-    Lcoslib = cdll.LoadLibrary("Image_Control.dll")
-    Lcoslib = windll.LoadLibrary("Image_Control.dll")
+    Lcoslib = windll.LoadLibrary(Path_to_DLL+"Image_Control.dll")
+    
     LaguerreGaussMode = Lcoslib.LaguerreGaussMode
     LaguerreGaussMode.argtyes = [c_int, c_int, c_int, c_double, c_int, c_int, c_void_p, c_void_p]
     LaguerreGaussMode.restype = c_int
@@ -191,7 +196,7 @@ class SLM(Device):
 
     host = device_property(dtype=str, default_value="localhost")
     port = class_property(dtype=int, default_value=10000)
-    Lcoslib = windll.LoadLibrary("C:\\Users\\User\\Desktop\\Tango_Device_Test\\Tango_SLM\\Image_Control.dll")
+    Lcoslib = windll.LoadLibrary(Path_to_DLL+"Image_Control.dll")
     thread = None
 
     def init_device(self):
@@ -225,7 +230,7 @@ class SLM(Device):
         return "Test"
     
     @command(dtype_in=((int,),),dtype_out=str)
-    def CustomImage(self,Image):
+    def CustomImage(self,User_Image):
         global my_thread
           #pixelpitch(0: 20um 1: 1.25um)
         p = 5
@@ -233,8 +238,11 @@ class SLM(Device):
         pitch = 1
         beamSize = 20.0
         #Display CGH pattern from image file with using dll
-        filepath = "Target image sample\\number_gradation_256x256.bmp"
-        makeBmpArray(filepath, x, y, farray)
+        # N = (1280,1024)
+        # image = np.random.randint(0, 255, size=N)
+        # print(image)
+        makeBmpArray(User_Image, x, y, farray)
+        showOn2ndDisplay(monitorNo, windowNo, x, xShift, y, yShift, farray)
         my_thread = Thread(target = showOn2ndDisplay_all_time, args = (monitorNo, windowNo, x, xShift, y, yShift, farray, ))
         my_thread.start()
         return "Test"
