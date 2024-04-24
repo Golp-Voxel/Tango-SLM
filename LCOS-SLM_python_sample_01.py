@@ -7,6 +7,7 @@ Created on Mon May 18 14:10:00 2020
 
 from PIL import Image
 import numpy as np
+np.set_printoptions(threshold=np.inf)
 from ctypes import *
 import copy
 import time
@@ -20,7 +21,7 @@ def main():
     y = 1024
     
     #LCOS-SML monitor number setting
-    monitorNo = 2
+    monitorNo = 1
     windowNo = 0
     xShift = 0
     yShift = 0
@@ -36,52 +37,55 @@ def main():
     farray2 = FARRAY(0)
     farray3 = FARRAY(0)
     
-    #Display axiconLens pattern array with using dll
-    top = 10.0 #top level
-    makeAxiconLensArray(top, pitch, x, y, farray)
-    showOn2ndDisplay(monitorNo, windowNo, x, xShift, y, yShift, farray)
+    # #Display axiconLens pattern array with using dll
+    # top = 10.0 #top level
+    # makeAxiconLensArray(top, pitch, x, y, farray)
+    # showOn2ndDisplay(monitorNo, windowNo, x, xShift, y, yShift, farray)
     
-    #Display cylindricalLens pattern array with using dll
-    forcus = 1000
-    wavelength = 1064
-    modeSelect = 0
-    makeCylindricalLensArray(forcus, wavelength, pitch, modeSelect, x, y, farray)
-    showOn2ndDisplay(monitorNo, windowNo, x, xShift, y, yShift, farray)
+    # #Display cylindricalLens pattern array with using dll
+    # forcus = 1000
+    # wavelength = 1064
+    # modeSelect = 0
+    # makeCylindricalLensArray(forcus, wavelength, pitch, modeSelect, x, y, farray)
+    # showOn2ndDisplay(monitorNo, windowNo, x, xShift, y, yShift, farray)
     
-    #Display rotated pattern array with using dll
-    degree = 30.0
-    imageRotation(farray, degree, x, y, farray2)
-    showOn2ndDisplay(monitorNo, windowNo, x, xShift, y, yShift, farray2)
+    # #Display rotated pattern array with using dll
+    # degree = 30.0
+    # imageRotation(farray, degree, x, y, farray2)
+    # showOn2ndDisplay(monitorNo, windowNo, x, xShift, y, yShift, farray2)
     
-    #Display diffraction grating pattern array with using dll
-    rowOrColumn = 0
-    gradiationNo = 16
-    gradiationWidth = 16
-    slipFactor = 0
-    makeDiffractionPatternArray(rowOrColumn, gradiationNo, gradiationWidth, slipFactor, x, y, farray)
-    showOn2ndDisplay(monitorNo, windowNo, x, xShift, y, yShift, farray)
+    # #Display diffraction grating pattern array with using dll
+    # rowOrColumn = 0
+    # gradiationNo = 16
+    # gradiationWidth = 16
+    # slipFactor = 0
+    # makeDiffractionPatternArray(rowOrColumn, gradiationNo, gradiationWidth, slipFactor, x, y, farray)
+    # showOn2ndDisplay(monitorNo, windowNo, x, xShift, y, yShift, farray)
     
-    #Display Laguerre Gauss Mode pattern array with using dll
-    p = 1
-    m = 1
-    pitch = 1
-    beamSize = 20.0
-    makeLaguerreGaussModeArray(p, m, pitch, beamSize, x, y, farray)
-    showOn2ndDisplay(monitorNo, windowNo, x, xShift, y, yShift, farray)
+    # #Display Laguerre Gauss Mode pattern array with using dll
+    # p = 1
+    # m = 1
+    # pitch = 1
+    # beamSize = 20.0
+    # makeLaguerreGaussModeArray(p, m, pitch, beamSize, x, y, farray)
+    # showOn2ndDisplay(monitorNo, windowNo, x, xShift, y, yShift, farray)
     
-    #Display FresnelLens pattern array with using dll
-    forcus = 1000
-    wavelength = 1064
-    makeFresnelLensArray(forcus, wavelength, pitch, x, y, farray2)
-    showOn2ndDisplay(monitorNo, windowNo, x, xShift, y, yShift, farray2)
+    # #Display FresnelLens pattern array with using dll
+    # forcus = 1000
+    # wavelength = 1064
+    # makeFresnelLensArray(forcus, wavelength, pitch, x, y, farray2)
+    # showOn2ndDisplay(monitorNo, windowNo, x, xShift, y, yShift, farray2)
     
-    #Display synthesize FresnelLens and Laguerre Gauss Mode pattern array with using dll
-    phaseSynthsizer([farray2, farray], farray3)
-    showOn2ndDisplay(monitorNo, windowNo, x, xShift, y, yShift, farray3)
+    # #Display synthesize FresnelLens and Laguerre Gauss Mode pattern array with using dll
+    # phaseSynthsizer([farray2, farray], farray3)
+    # showOn2ndDisplay(monitorNo, windowNo, x, xShift, y, yShift, farray3)
  
     #Display CGH pattern from image file with using dll
-    filepath = "Target image sample\\number_gradation_256x256.bmp"
-    makeBmpArray(filepath, x, y, farray)
+    filepath = "C:\\Users\\Pedro\\Desktop\\Tango_SLM\\Target image sample\\number_gradation_256x256.bmp"
+    N = (1280,1024)
+    image = np.random.randint(0, 255, size=N)
+    print(image)
+    makeBmpArray(image, x, y, farray)
     showOn2ndDisplay(monitorNo, windowNo, x, xShift, y, yShift, farray)
     
     return 0
@@ -95,7 +99,7 @@ int y: Pixel number of y-dimension
 8bit unsigned integer array array: output array
 '''
 def makeAxiconLensArray(top, pitch, x, y, array):
-    Lcoslib = cdll.LoadLibrary("C:\\Users\\User\\Desktop\\Golpe_Voxel\\Intromentos\\SLM_Pyth_test\\python_sample_code_64bit\\Image_Control.dll") #for cdll
+    Lcoslib = cdll.LoadLibrary("C:\\Users\\Pedro\\Desktop\\Tango_SLM\\Image_Control.dll") #for cdll
     Lcoslib = windll.LoadLibrary("Image_Control.dll") #for windll
     AxiconLens = Lcoslib.AxiconLens
     AxiconLens.argtyes = [c_double, c_int, c_int, c_int, c_void_p, c_void_p]
@@ -198,10 +202,12 @@ int x: Pixel number of x-dimension
 int y: Pixel number of y-dimension
 8bit unsigned int array outArray: output array
 '''
-def makeBmpArray(filepath, x, y, outArray):
+def makeBmpArray_OG(filepath, x, y, outArray):
     im = Image.open(filepath)
     imageHeight, imageWidth = im.size
     im_gray = im.convert("L")
+    
+    print(len(np.array(outArray)))
     
     print("Imagesize = {} x {}".format(imageWidth, imageHeight))
     
@@ -209,7 +215,9 @@ def makeBmpArray(filepath, x, y, outArray):
         for j in range(imageHeight):
             outArray[i+imageWidth*j] = im_gray.getpixel((i,j))
     
-    Lcoslib = cdll.LoadLibrary("Image_Control.dll")
+    print(len(np.array(outArray)))
+    
+    Lcoslib = cdll.LoadLibrary("C:\\Users\\Pedro\\Desktop\\Tango_SLM\\Image_Control.dll") #for cdll
     Lcoslib = windll.LoadLibrary("Image_Control.dll")
     
     #Create CGH
@@ -224,6 +232,54 @@ def makeBmpArray(filepath, x, y, outArray):
     
     #Tilling the image
     inArray = copy.deepcopy(outArray)
+    # print(np.array(inArray))
+    print(len(np.array(inArray)))
+    Image_Tiling = Lcoslib.Image_Tiling
+    Image_Tiling.argtyes = [c_void_p, c_int, c_int, c_int, c_int, c_int, c_void_p, c_void_p]
+    Image_Tiling.restype = c_int
+    
+    Image_Tiling(byref(inArray), imageWidth, imageHeight, imageHeight*imageWidth, x, y, byref(c_int(x*y)), byref(outArray))
+    
+    return 0
+
+
+
+'''
+the function for making FresnelLens pattern array
+String filepath: image file path.
+int x: Pixel number of x-dimension
+int y: Pixel number of y-dimension
+8bit unsigned int array outArray: output array
+'''
+def makeBmpArray(image, x, y, outArray):
+    imageWidth,imageHeight = np.shape(image)
+    print(len(np.array(outArray)))
+    
+    print("Imagesize = {} x {}".format(imageWidth, imageHeight))
+    
+    for i in range(imageWidth):
+        for j in range(imageHeight):
+            outArray[i+imageWidth*j] = image[i,j]
+    
+    # print(len(np.array(outArray)))
+    
+    Lcoslib = cdll.LoadLibrary("C:\\Users\\Pedro\\Desktop\\Tango_SLM\\Image_Control.dll") #for cdll
+    Lcoslib = windll.LoadLibrary("Image_Control.dll")
+    
+    # #Create CGH
+    # inArray = copy.deepcopy(outArray)
+    # Create_CGH_OC = Lcoslib.Create_CGH_OC
+    # Create_CGH_OC.argtyes = [c_void_p, c_int, c_int, c_int, c_int, c_void_p, c_void_p]
+    # Create_CGH_OC.restype = c_int
+    
+    # repNo = 100
+    # progressBar = 1
+    # Create_CGH_OC(byref(inArray), repNo, progressBar, imageWidth, imageHeight, byref(c_int(imageHeight*imageWidth)), byref(outArray))
+    
+    #Tilling the image
+    inArray = copy.deepcopy(outArray)
+    # print(np.array(inArray))
+    print(len(np.array(inArray)))
     Image_Tiling = Lcoslib.Image_Tiling
     Image_Tiling.argtyes = [c_void_p, c_int, c_int, c_int, c_int, c_int, c_void_p, c_void_p]
     Image_Tiling.restype = c_int
