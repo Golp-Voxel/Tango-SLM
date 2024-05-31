@@ -56,7 +56,7 @@ forcus = 1000
 wavelength = 1064
 modeSelect = 0
 
-Path_to_DLL = "C:\\Users\\User\\Desktop\\Tango_Device_Test\\Tango_SLM\\"
+Path_to_DLL = "C:\\Users\\Voxel\\Desktop\\Tango_Device\\Tango_SLM\\"
 
 
 def makeCylindricalLensArray(forcus, wavelength, pitch, modeSelect, x, y, array):
@@ -229,7 +229,8 @@ class SLM(Device):
         my_thread.start()
         return "Test"
     
-    @command(dtype_in=((int,),),dtype_out=str)
+    # TODO: tango only accepts 1D arrays, so we can send JSON or a 1D array with specific formatting.
+    @command(dtype_in=(int,),dtype_out=str)
     def CustomImage(self,User_Image):
         global my_thread
           #pixelpitch(0: 20um 1: 1.25um)
@@ -241,6 +242,7 @@ class SLM(Device):
         # N = (1280,1024)
         # image = np.random.randint(0, 255, size=N)
         # print(image)
+        User_Image = np.array(User_Image).reshape(x, y)
         makeBmpArray(User_Image, x, y, farray)
         showOn2ndDisplay(monitorNo, windowNo, x, xShift, y, yShift, farray)
         my_thread = Thread(target = showOn2ndDisplay_all_time, args = (monitorNo, windowNo, x, xShift, y, yShift, farray, ))
