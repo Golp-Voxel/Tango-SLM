@@ -19,7 +19,7 @@ CylindricalLens()
 ```python 
 CustomImage(User_Image)
 ```
-In the case of the CustomImage it is recuired to send a 2D array of 1280 by 1024 (`User_Image`).
+In the case of the CustomImage it is recuired to send a 1D array(size 1280x1024) that is going to be converted in to a 2D array 1280 by 1024 (`User_Image`).
 
 To stop the display of the SLM you need to call the following function:
 
