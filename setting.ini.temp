@@ -1,0 +1,2 @@
+[DEFAULT]
+DLL =  "Path to Image_Control.dll"

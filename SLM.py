@@ -14,6 +14,8 @@ import json
 import time
 from threading import Thread
 
+import configparser
+
 import tango
 from tango import AttrQuality, AttrWriteType, DevState, DispLevel, AttReqType, Database
 from tango.server import Device, attribute, command
@@ -26,6 +28,11 @@ try:
    os.environ["ORBendPoint"] = orb_end_point
 except:
    pass
+
+
+config_info = configparser.ConfigParser()
+config_info.read('setting.ini')
+
 
 my_thread = None
 pitch = 1
@@ -56,7 +63,7 @@ forcus = 1000
 wavelength = 1064
 modeSelect = 0
 
-Path_to_DLL = "C:\\Users\\Voxel\\Desktop\\Tango_Device\\Tango_SLM\\"
+Path_to_DLL = str(config_info['DEFAULT']['DLL'])+"\\"
 
 
 def makeCylindricalLensArray(forcus, wavelength, pitch, modeSelect, x, y, array):

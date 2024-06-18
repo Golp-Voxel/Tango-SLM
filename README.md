@@ -17,7 +17,9 @@ After activating it you can install all the models to run this tool by using the
 pip install -r Requirements.txt
 ```
 
-To complete the installation, it is necessary to copy the `SLM.bat` and `SLM_P.bat` templates and change the paths to the installation folder. And the command to run the `tango-env\Scripts\activate` script.
+To complete the installation, it is necessary to copy the `SLM.bat` and `SLM_P.bat` templates and change the paths to the installation folder. And the command to run the `tango-env\Scripts\activate` script. 
+
+Then copy the `setting.ini` template and fill in the path to the dlls for the SLM.
 
 
 
