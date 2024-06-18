@@ -261,7 +261,7 @@ class SLM(Device):
         return "Test"
     
     @command(dtype_out=str)
-    def kill_theard(self):
+    def StopDisplay(self):
         global my_thread
         try:
             my_thread.join()
