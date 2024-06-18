@@ -40,7 +40,7 @@ In the case of the CustomImage, it is necessary to send a 1D array (size 1280x10
 
 So you can use the function `User_Image.reshape(1280*1024)` to convert your 2D image array to 1D. The conversion performed by the function is as follows
 ```
-User_Image = np.array(User_Image).reshape(x, y)
+User_Image_2D = np.array(User_Image_1D).reshape(x, y)
 ```
 
 To stop displaying the SLM, call the following function
