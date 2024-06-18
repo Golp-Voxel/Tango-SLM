@@ -43,7 +43,7 @@ So you can use the function `User_Image.reshape(1280*1024)` to convert your 2D i
 User_Image_2D = np.array(User_Image_1D).reshape(x, y)
 ```
 
-To stop displaying the SLM, call the following function
+To stop displaying the SLM, call the following function:
 
 ```
 StopDisplay()
