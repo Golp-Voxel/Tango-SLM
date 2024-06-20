@@ -222,11 +222,11 @@ class SLM(Device):
  
 
 
-    @command(dtype_out=str)
-    def LaguerreGauss(self):
+    @command(dtype_in=int, dtype_out=str)
+    def LaguerreGauss(self,number_p):
         global my_thread
           #pixelpitch(0: 20um 1: 1.25um)
-        p = 5
+        p = number_p
         m = 5
         pitch = 1
         beamSize = 20.0

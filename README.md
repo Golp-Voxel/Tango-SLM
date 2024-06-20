@@ -28,8 +28,9 @@ Then copy the `setting.ini` template and fill in the path to the dlls for the SL
 After installing the Tango Device server, you can display a LaguerreGauss or a CylindricalLens or even a CustomImage by calling the corresponding function:
 
 ```python 
-LaguerreGauss()
+LaguerreGauss(NumberP)
 ```
+Where `NumberP` is the number of triangles displayed in the SLM.
 
 ```python 
 CylindricalLens()
