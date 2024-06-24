@@ -48,7 +48,7 @@ User_Image_2D = np.array(User_Image_1D).reshape(x, y)
 
 To stop displaying the SLM, call the following function:
 
-```
+```python
 StopDisplay()
 ```
 
