@@ -65,7 +65,7 @@ SLM.set_timeout_millis(9000)
 SLM.get_command_list()
 #['CylindricalLens', 'CustomImage', 'LaguerreGauss', 'kill_theard']
 
-SLM.LaguerreGauss()
+SLM.LaguerreGauss(10)
 time.sleep(10)
 SLM.StopDisplay()
 ```
