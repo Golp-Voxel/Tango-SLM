@@ -1,5 +1,5 @@
 # SLM - Tango Device Server 
-This repository contains the driver for controlling an SLM with the Tango Control. After cloning this repository with the following command
+This repository contains the driver for controlling a SLM with the Tango Control. After cloning this repository with the following command
 
 ```
 git clone https://github.com/Golp-Voxel/Tango_SLM.git
